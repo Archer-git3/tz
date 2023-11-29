@@ -1,0 +1,29 @@
+version: '3'
+services:
+  app:
+    build: .
+    environment:
+      - AMQP_USER
+      - AMQP_PASSWORD
+      - AMQP_ADDRESS
+      - AMQP_VHOST
+      - AMQP_PORT
+      - EXTERNAL_API_URL
+      - TELEGRAM_TOKEN
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${AMQP_USER}
+      - RABBITMQ_DEFAULT_PASS=${AMQP_PASSWORD}
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
